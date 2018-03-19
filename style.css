@@ -38,14 +38,10 @@ body{
   }
   #title button {
     border: none;
-    background: white;
-    padding: .5em .7em;
-    margin: .5em auto;
-    border-radius: 1px;
-    transition: .2s all ease-in-out;
+    border-radius: 1.5px;
     display: block;
-    height: 7vh;
-    width:10vw;
+    margin:.7em auto;
+    transition: .2s all ease-in-out;
   }
   #title button:hover {
     color:white;
