@@ -18,7 +18,7 @@ body{
     text-align: center;
   }
   #loading-text{
-    line-height: 50vh;
+    line-height: 40vh;
     font-weight: 300;
   }
   #title {
@@ -83,17 +83,14 @@ body{
   #options-error{
     color: red;
   }
-
-#sub-bar{
-  width:70vw;
-  border:1px solid white;
-  margin: auto;
-  height: 10px;
-  border-radius: 10px;
-  overflow: hidden;
+#blockquote{
+  width: 75vw;
+  margin:1em auto;
+  font-family:monospace;
 }
-#sub__inner-bar{
-  height: 100%;
-  background: repeating-linear-gradient(45deg,#606dbc,#606dbc 10px,#465298 10px,#465298 20px);
-  box-sizing: border-box;
+#quote{
+  font-weight: normal;
+}
+#cite::before{
+  content: '-'
 }

@@ -7,18 +7,19 @@ planetTextures = [
   'bright.jpg',
   'red.jpg',
   'rock.jpg',
-  'rock2.png',
+  'rock2.jpg',
   'rock3.jpg',
-  'rock4.jpg',
   'rockyred.jpg'
 ]
 moonTextures = [
-  'moon.jpg'
+  'moon.jpg',
+  'moon2.jpg'
 ]
 
 ringTextures = [
   'rings1.jpg',
-  'rings2.jpg'
+  'rings2.jpg',
+  'rings3.jpg'
 ]
 
 
@@ -89,4 +90,31 @@ planetNameP3 = [
   '5E1',
   '5F1',
   '5G1'
+]
+
+quotes = [
+  {
+    q: "Why are these planets here?",
+    c: "John Diaz"
+  },
+  {
+    q: "I would like to die on Mars. Just not on impact",
+    c: "Elon Musk"
+  },
+  {
+    q: "Somewhere, something incredible is waiting to be known.",
+    c: "Carl Sagan"
+  },
+  {
+    q: "We are the cosmos made conscious.",
+    c: "Prof. Brian Cox"
+  },
+  {
+    q: "The universe is a pretty big place. If it's just us, seems like an awful waste of space.",
+    c: "Carl Sagan"
+  },
+  {
+    q: "I never stopped getting ready. Just in case.",
+    c: "Chris Hadfield"
+  }
 ]
