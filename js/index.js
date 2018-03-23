@@ -14,7 +14,7 @@ O..........*********............O
 OO.........********............OO        .     .
 OO.........*****.............OO    +               +
  O........***.............OO               +
-+   OO.......**...........OO      .
++   OO.......**...........O    .
 .     OOOOOOOOOOOOOOOO                             +
 
 */
@@ -24,30 +24,23 @@ var stars = [];
 var starField;
 var starsGeometry;
 var addRandomPlanet = function(){
-  randomCoors = [Math.floor(Math.random() * 100-50)*10,  Math.floor(Math.random() * 100-50)*10, Math.floor(Math.random() * 100-50)*10];
-  randomProps = [(Math.random()*15)+2,20,20];
+  randomCoors = [Math.random() * (500 + 500) - 500,  Math.random() * (500 + 500) - 500, Math.random() * (500 + 500) - 500];
+  randomProps = [(Math.random()*15)+2,50,50];
   planetCreate(randomCoors,randomProps);//creates a planet with random coordinates and properties
 }
 
 var save = function(){
   var FOV = Number($("#fov").val());
-  var near = Number($("#near").val());
-  var far = Number($("#far").val());
 
   camera.fov = FOV;
-  camera.near = near;
-  camera.far = far;
-  camera.position.z = 10;
-  camera.position.y = 1.5;
-  camera.lookAt(new THREE.Vector3(0, 0, 0));
   camera.updateProjectionMatrix();
 }
 
 function starCreate(){
   // List of all the materials used in the meshes you want to combine
-  var x = (Math.random()*200 - 50)*10;
-  var y = (Math.random()*200 - 50)*11;
-  var z = (Math.random()*200 - 50)*10;
+  var x = Math.random() * (1000 + 1000) - 1000;
+  var y = Math.random() * (1000 + 1000) - 1000;
+  var z = Math.random() * (1000 + 1000) - 1000;
   var g = new THREE.SphereGeometry(.5,7,7);
   var m = new THREE.MeshLambertMaterial({color:0xFFFFFF});
   var star = new THREE.Mesh(g, m);
@@ -66,11 +59,12 @@ function initialize(){
     camera.position.z = 10;
     camera.position.y = 1.5;
 
-          planetCreate([0,0,0],[4.5,25,25]);//first planet in the center
+    planetCreate([0,0,0],[7,20,20]);
+    
           //sky sphere
           var starGeometry = new THREE.SphereGeometry(10000, 50, 50);
           var starMaterial = new THREE.MeshPhongMaterial({
-            map: new THREE.TextureLoader().load("../assets/othertexture/bgsky.jpg"),
+            map: new THREE.TextureLoader().load("assets/textures/other/bgdrop.jpg"),
             side: THREE.DoubleSide,
             shininess: 0
           });
@@ -79,7 +73,6 @@ function initialize(){
           scene.add(starField);
 
           /*******STAR CREATION*******/
-          /*      line 86 - 136      */
           /*
             Generating stars involves going through three stages,
             going from individual meshes to a single mesh, so
@@ -104,15 +97,16 @@ function initialize(){
           */
           var i =0;
           var meshes = [];
+          var maxStars = 1000;
           var totalGeometry = new THREE.Geometry();
 
       currentLoop = setInterval(function(){//stage1
          starCreate()
          starCount = stars.length
-         $("#inner-bar").width((starCount/1000)*100 + '%');
+         $("#inner-bar").width((starCount/maxStars)*100 + '%');
           $("#loading-text").html("Creating Stars.")
           i++;
-          if(i == 1000){
+          if(i == maxStars){
             clearInterval(currentLoop)
             i=0;
             nextLoop()
@@ -124,10 +118,10 @@ function initialize(){
             $("#loading-text").html("Linking Stars..")
 
          currentLoop = setInterval(function(){
-           $("#inner-bar").width((i/1000)*100 + '%');
+           $("#inner-bar").width((i/maxStars)*100 + '%');
            meshes.push({mesh: stars[i], materialIndex: i})
            i++;
-           if(i == 1000){
+           if(i == maxStars){
              clearInterval(currentLoop)
              i=0;
              lastLoop()
@@ -138,7 +132,7 @@ function initialize(){
 
        function lastLoop (){//stage 3
          currentLoop=setInterval(function(){
-           $("#inner-bar").width((i/1000)*100 + '%');
+           $("#inner-bar").width((i/maxStars)*100 + '%');
             $("#loading-text").html("Merging Sky...")
              meshes[i].mesh.updateMatrix();
              totalGeometry.merge(meshes[i].mesh.geometry, meshes[i].mesh.matrix, meshes[i].materialIndex);
@@ -184,20 +178,27 @@ ____^/\___^--____/\____O______________/\/\---/\___________---______________
 --  __                      ___--  ^  ^                         --  __
 (saturn as seen from one of its moons)
 */
+
+
   cX = position[0],cY = position[1],cZ = position[2];
+
+  if(Math.random()*100>99){//chances of earth being created
+    earthCreate(cX,cY,cZ);
+    
+    return
+  }
+  
   var ring=false;
   var moon=false;
   var tag;//3D planet name
-  var pretext = planetTextures[Math.floor(Math.random()*planetTextures.length)];
-  console.log(pretext)
-  var texture = new THREE.TextureLoader().load( "../assets/planettexture/"+pretext );
+  var texture = new THREE.TextureLoader().load( "assets/textures/planet/"+planetTextures[Math.floor(Math.random()*planetTextures.length)] );
   var geometry = new THREE.SphereGeometry(options[0],options[1],options[2]);//4.5,25,25
   var material = new THREE.MeshLambertMaterial({map:texture});
   var planet = new THREE.Mesh(geometry, material);
 
   if (Math.random()>=0.5) {//determines if planet has ring
     var geometry = new THREE.RingGeometry(options[0]*2,options[0]*2.5,35);
-    var texture = new THREE.TextureLoader().load("../assets/othertexture/"+ringTextures[Math.floor(Math.random()*ringTextures.length)])
+    var texture = new THREE.TextureLoader().load("assets/textures/other/"+ringTextures[Math.floor(Math.random()*ringTextures.length)])
     var material = new THREE.MeshLambertMaterial({map: texture,side: THREE.DoubleSide});
     ring = new THREE.Mesh(geometry, material);
     ring.rotation.x = Math.random()*300 - 50;
@@ -208,7 +209,7 @@ ____^/\___^--____/\____O______________/\/\---/\___________---______________
   }
 
   if (Math.random()>=0.5) {//determines if planet has moon
-    var texture = new THREE.TextureLoader().load( "../assets/moontexture/"+moonTextures[Math.floor(Math.random()*moonTextures.length)] );
+    var texture = new THREE.TextureLoader().load( "assets/textures/moon/"+moonTextures[Math.floor(Math.random()*moonTextures.length)] );
     var geometry = new THREE.SphereGeometry(Math.random()+Math.random(), 17, 17);
     var material = new THREE.MeshBasicMaterial({map:texture});
     moon = new THREE.Mesh(geometry, material);
@@ -229,8 +230,8 @@ ____^/\___^--____/\____O______________/\/\---/\___________---______________
   planetname=planetNameP1[Math.floor(Math.random()*planetNameP1.length)]+'-'+planetNameP2[Math.floor(Math.random()*planetNameP2.length)]+'-'+planetNameP3[Math.floor(Math.random()*planetNameP3.length)];
   if (Math.random()*1000> 990) {planetname+=" (With Life)"}//10 in 10000 planets has life
 
-var loader = new THREE.FontLoader()
-    loader.load( '../helvetiker_regular.typeface.json', function ( font ) {
+  var loader = new THREE.FontLoader()
+    loader.load( 'helvetiker_regular.typeface.json', function ( font ) {
 
       var textGeo = new THREE.TextGeometry( planetname, {
         font: font,
@@ -269,3 +270,49 @@ var loader = new THREE.FontLoader()
 
   planetCount++;
 };
+
+function earthCreate(cX,cY,cZ){
+  var texture = new THREE.TextureLoader().load( "assets/textures/earth/earthDay.jpg" );
+  var geometry = new THREE.SphereGeometry(7,30,30);//4.5,25,25
+  var material = new THREE.MeshLambertMaterial({map:texture});
+  var planet = new THREE.Mesh(geometry, material);
+    var texture = new THREE.TextureLoader().load( "assets/textures/earth/earthMoon.jpg");
+    var geometry = new THREE.SphereGeometry(.5, 17, 17);
+    var material = new THREE.MeshBasicMaterial({map:texture});
+    moon = new THREE.Mesh(geometry, material);
+    moon.position.set(cX,cY,cZ);
+    planet.position.set(cX,cY,cZ);
+    scene.add(moon);
+    scene.add(planet);
+  camera.position.z = cZ + 10;/*resets the camera*/
+  camera.position.y = cY + 10;           /*to the new planet*/
+  camera.position.x = cX + 10;
+  controls.target.set(cX,cY,cZ);
+  controls.update();
+var loader = new THREE.FontLoader()
+    loader.load('helvetiker_regular.typeface.json', function ( font ) {
+      var textGeo = new THREE.TextGeometry( "Earth (With Life)", {
+        font: font,
+        size: 7,
+        height: .1
+      } );
+      var textMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF } );
+      var tag = new THREE.Mesh( textGeo, textMaterial );
+      tag.position.set( cX-(15), cY+(10), cZ );
+      scene.add( tag );
+    } );
+    angle = planet.scale.y;
+    setInterval(function(){
+      angle+=0.0008;//how fast
+      moon.position.x = 15*Math.cos(angle);//how far
+      moon.position.y = 5*Math.sin(angle);
+      moon.position.z = 15*Math.sin(angle);
+      moon.rotation.y += 0.000009;
+      planet.rotation.y += 0.0001;
+    },10)
+}
+
+$("button").click(function(){
+  var onFX = new Audio('assets/audio/on.mp3');
+  onFX.play()
+})

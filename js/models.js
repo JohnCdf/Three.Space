@@ -8,8 +8,7 @@ planetTextures = [
   'red.jpg',
   'rock.jpg',
   'rock2.jpg',
-  'rock3.jpg',
-  'rockyred.jpg'
+  'rock3.jpg'
 ]
 moonTextures = [
   'moon.jpg',

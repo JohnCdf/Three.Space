@@ -18,7 +18,7 @@ body{
     text-align: center;
   }
   #loading-text{
-    line-height: 40vh;
+    margin-bottom:1em;
     font-weight: 300;
   }
   #title {
@@ -46,7 +46,6 @@ body{
   #title button:hover {
     color:white;
     background: #00002f;
-    width: 11vw;
   }
   hr{
     background-color: white;
@@ -79,11 +78,13 @@ body{
     position:fixed;
     top:0;
     right:0;
+    border-radius: 50%;
   }
   #options-error{
     color: red;
   }
 #blockquote{
+  height:50vh;
   width: 75vw;
   margin:1em auto;
   font-family:monospace;
@@ -93,4 +94,28 @@ body{
 }
 #cite::before{
   content: '-'
+}
+
+
+#rotatescreen {
+  display: none;
+  position: fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  height:100vh;
+  width:100vw;
+  z-index: 2000;
+  background: rgb(37, 37, 37);
+}
+#rotatescreen img {
+  height:100px;
+  width:100px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  z-index: 2001;
 }
