@@ -93,8 +93,8 @@ planetNameP3 = [
 
 quotes = [
   {
-    q: "Why are these planets here?",
-    c: "John Diaz"
+    q: "Freedom Lies in being bold",
+    c: "Robert Frost"
   },
   {
     q: "I would like to die on Mars. Just not on impact",
@@ -115,5 +115,9 @@ quotes = [
   {
     q: "I never stopped getting ready. Just in case.",
     c: "Chris Hadfield"
+  },
+  {
+    q: "The earth is the cradle of humankind, but one cannot live in the cradle forever",
+    c: "Konstantin Tsiolkovsky"
   }
 ]
