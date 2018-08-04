@@ -50,108 +50,64 @@ function starCreate(){
 };
 
 function initialize(){
-    $("#title").fadeOut()
-    var quote = quotes[Math.floor(Math.random()*quotes.length)];
-    $("#quote").text(quote.q);
-    $("#cite").text(quote.c);
-    document.body.appendChild( renderer.domElement );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    camera.position.z = 10;
-    camera.position.y = 1.5;
-
-    planetCreate([0,0,0],[7,20,20]);
+  $("#title").fadeOut()
+  var quote = quotes[Math.floor(Math.random()*quotes.length)];
+  $("#quote").text(quote.q);
+  $("#cite").text(quote.c);
+  document.body.appendChild( renderer.domElement );
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  camera.position.z = 10;
+  camera.position.y = 1.5;
+  planetCreate([0,0,0],[7,20,20]);
     
-          //sky sphere
-          var starGeometry = new THREE.SphereGeometry(10000, 50, 50);
-          var starMaterial = new THREE.MeshPhongMaterial({
-            map: new THREE.TextureLoader().load("assets/textures/other/bgdrop.jpg"),
-            side: THREE.DoubleSide,
-            shininess: 0
-          });
-          //canvas background
-          starField = new THREE.Mesh(starGeometry, starMaterial);
-          scene.add(starField);
+  //sky sphere
+  var starGeometry = new THREE.SphereGeometry(10000, 50, 50);
+  var starMaterial = new THREE.MeshPhongMaterial({
+    map: new THREE.TextureLoader().load("assets/textures/other/bgdrop.jpg"),
+    side: THREE.DoubleSide,
+    shininess: 0
+  });
+  //canvas background
+  starField = new THREE.Mesh(starGeometry, starMaterial);
+  scene.add(starField);
+  /*******STAR CREATION*******/
+  /*
+    Generating stars involves going through three stages,
+    going from individual meshes to a single mesh, so
+    we dont deal with a thousand separate stars.
+    In stage 1, we will set an interval to create a thousand stars,
+    using the starCreate() function. This functions will generate a
+    mesh (star geometry) in a random position.
+    In stage 2, the stars are pushed into an array as an object
+    with an index
+    In the final stage, each star gets merged into a single geometry
+    and, viola! It's placed into the scene
+  */
+  var meshes = [];
+  var maxStars = 1000;
+  var totalGeometry = new THREE.Geometry();
 
-          /*******STAR CREATION*******/
-          /*
-            Generating stars involves going through three stages,
-            going from individual meshes to a single mesh, so
-            we dont deal with a thousand separate stars.
+  for (i = 0; i < maxStars; i++){//stage1
+    starCreate()
+    $("#inner-bar").width((stars.length / maxStars) * 100 + '%');
+  }
+  
+  for (i = 0; i < maxStars; i++){
+    $("#inner-bar").width((i/maxStars)*100 + '%');
+    meshes.push({mesh: stars[i], materialIndex: i});
+  }
+  
+  for (i = 0; i < meshes.length; i++){//stage 3
+   $("#inner-bar").width((i/maxStars)*100 + '%');
+   meshes[i].mesh.updateMatrix();
+   totalGeometry.merge(meshes[i].mesh.geometry, meshes[i].mesh.matrix, meshes[i].materialIndex);
+  }
 
-            In stage 1, we will set an interval to create a thousand stars,
-            using the starCreate() function. This functions will generate a
-            mesh (star geometry) in a random position.
+  starsGeometry = new THREE.Mesh(totalGeometry, new THREE.MeshBasicMaterial({color: 0xFFFFFF}));
+  scene.add(starsGeometry);
+  $("#loading").fadeOut()
 
-            In stage 2, the stars are pushed into an array as an object
-            with an index
-
-            In the final stage, each star gets merged into a single geometry
-            and, viola! It's placed into the scene
-
-          */
-          /*---Note---
-            Instead of using loops,
-            timeIntervals are utilised.
-            This is so the loops dont run before
-            everything else (They are prioritised!).
-          */
-          var i =0;
-          var meshes = [];
-          var maxStars = 1000;
-          var totalGeometry = new THREE.Geometry();
-
-      currentLoop = setInterval(function(){//stage1
-         starCreate()
-         starCount = stars.length
-         $("#inner-bar").width((starCount/maxStars)*100 + '%');
-          $("#loading-text").html("Creating Stars.")
-          i++;
-          if(i == maxStars){
-            clearInterval(currentLoop)
-            i=0;
-            nextLoop()
-          }
-       },1)
-
-       function nextLoop(){//stage2
-
-            $("#loading-text").html("Linking Stars..")
-
-         currentLoop = setInterval(function(){
-           $("#inner-bar").width((i/maxStars)*100 + '%');
-           meshes.push({mesh: stars[i], materialIndex: i})
-           i++;
-           if(i == maxStars){
-             clearInterval(currentLoop)
-             i=0;
-             lastLoop()
-           }
-         },1)
-
-       }
-
-       function lastLoop (){//stage 3
-         currentLoop=setInterval(function(){
-           $("#inner-bar").width((i/maxStars)*100 + '%');
-            $("#loading-text").html("Merging Sky...")
-             meshes[i].mesh.updateMatrix();
-             totalGeometry.merge(meshes[i].mesh.geometry, meshes[i].mesh.matrix, meshes[i].materialIndex);
-             if (i==meshes.length-1) {
-               starsGeometry = new THREE.Mesh(totalGeometry, new THREE.MeshBasicMaterial({color: 0xFFFFFF}));
-               scene.add(starsGeometry);
-                $("#loading").fadeOut()
-                i=0
-                clearInterval(currentLoop)
-
-             }
-
-             i++
-         },1)
-       }
-
-
-                           animate()
-
+  animate()
 }
 function planetCreate(position,options){
   /* PLANET CREATOR
